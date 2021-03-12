@@ -94,6 +94,31 @@ i {
   color: white;
 }
 
+.muted.active {
+  background-color: red;
+  color: black;
+}
+
+.speed {
+  margin: 3rem;
+  width: 30%;
+}
+.speed-slider {
+  padding: 0.2rem;
+  -webkit-appearance: none;
+  margin: 1rem 0rem;
+  width: 100%;
+  position: relative;
+  background: rgb(88, 88, 88);
+  cursor: pointer;
+  border-radius: 1rem;
+}
+.speed p {
+  font-size: 1.5rem;
+  margin: 2rem;
+  text-align: center;
+}
+
 @keyframes playTrack {
   from {
     transform: scale(1);

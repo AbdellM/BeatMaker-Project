@@ -1,12 +1,15 @@
 class Drumkit {
     constructor(){
-        this.pads      = document.querySelectorAll('.pad');
-        this.playBtn   = document.querySelectorAll('.play');    
-        this.selects   = document.querySelectorAll('select');
+        this.pads    = document.querySelectorAll('.pad');   
+        this.selects = document.querySelectorAll('select');
+        this.muteBtn = document.querySelectorAll('.muted');
 
-        this.kickAudio   = document.querySelector('.kick-sound');
-        this.snareAudio  = document.querySelector('.snare-sound');
-        this.hihatAudio  = document.querySelector('.hihat-sound');
+        this.playBtn = document.querySelector('.play'); 
+        this.speed    = document.querySelector('.speed-slider');
+
+        this.kickAudio  = document.querySelector('.kick-sound');
+        this.snareAudio = document.querySelector('.snare-sound');
+        this.hihatAudio = document.querySelector('.hihat-sound');
 
         this.currentKick  = "./sounds/kick-classic.wav";
         this.currentSnare = "./sounds/snare-acoustic01.wav";
@@ -62,10 +65,12 @@ class Drumkit {
 
     updateBtn () {
         if (!this.isPlaying){
-            this.playBtn[0].innerText = 'STOP';
+            this.playBtn.innerText = 'STOP';
+            this.playBtn.classList.add("active");
         }
         else{
-            this.playBtn[0].innerText = 'PLAY';
+            this.playBtn.innerText = 'PLAY';
+            this.playBtn.classList.remove("active");
         }
     }
 
@@ -75,22 +80,61 @@ class Drumkit {
 
         switch (selectName){
             case 'kick-select':
-                drumkit.kickAudio.src = selectValue;
+                this.kickAudio.src = selectValue;
                 break;
             case 'snare-select':
-                drumkit.snareAudio.src = selectValue;
+                this.snareAudio.src = selectValue;
                 break;
             case 'hihat-select':
-                drumkit.hihatAudio.src = selectValue;
+                this.hihatAudio.src = selectValue;
                 break;
-        
-      
-        
         }
-        console.log(drumkit.kickAudio)
+    }
+
+    mute (e) {
+        const muteName = e.target.classList[1];
+        e.target.classList.toggle('active');
+
+        if (e.target.classList.contains('active'))
+            switch (muteName){
+                case 'kick-muted':
+                    this.kickAudio.volume = 0;
+                    break;
+                case 'snare-muted':
+                    this.snareAudio.volume = 0;
+                    break;
+                case 'hihat-muted':
+                    this.hihatAudio.volume = 0;
+                    break;
+            }
+        else
+            switch (muteName){
+                case 'kick-muted':
+                    this.kickAudio.volume = 1;
+                    break;
+                case 'snare-muted':
+                    this.snareAudio.volume = 1;
+                    break;
+                case 'hihat-muted':
+                    this.hihatAudio.volume = 1;
+                    break;
+            }
+    }
+
+    changeSpeed (e) {
+        const speedText = document.querySelector('.speed-nr');
+        speedText.innerText = e.target.value;
+    }
+
+    updateSpeed (e) {
+        this.bpm = e.target.value;
+        clearInterval(this.isPlaying);
+        this.isPlaying = null;
+
+        if (this.playBtn.classList.contains("active"))
+            this.start();
     }
 }
-
 
 
 const drumkit = new Drumkit();
@@ -102,7 +146,7 @@ drumkit.pads.forEach( pad =>{
     });
 });
 
-drumkit.playBtn[0].addEventListener("click", function() {
+drumkit.playBtn.addEventListener("click", function() {
     drumkit.updateBtn();
     drumkit.start();
 });
@@ -110,5 +154,19 @@ drumkit.playBtn[0].addEventListener("click", function() {
 drumkit.selects.forEach( select => {
     select.addEventListener('change', function(e){
         drumkit.changeMusic(e);
-    })
-})
+    });
+});
+
+drumkit.muteBtn.forEach( mute => {
+    mute.addEventListener('click', function(e){
+    drumkit.mute(e);
+    });
+});
+
+drumkit.speed.addEventListener('input', function(e){
+    drumkit.changeSpeed(e);
+});
+
+drumkit.speed.addEventListener('change', function(e){
+    drumkit.updateSpeed(e);
+});
