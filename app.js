@@ -1,11 +1,16 @@
 class Drumkit {
     constructor(){
         this.pads      = document.querySelectorAll('.pad');
-        this.playBtn   = document.querySelectorAll('.play');
+        this.playBtn   = document.querySelectorAll('.play');    
+        this.selects   = document.querySelectorAll('select');
 
         this.kickAudio   = document.querySelector('.kick-sound');
         this.snareAudio  = document.querySelector('.snare-sound');
         this.hihatAudio  = document.querySelector('.hihat-sound');
+
+        this.currentKick  = "./sounds/kick-classic.wav";
+        this.currentSnare = "./sounds/snare-acoustic01.wav";
+        this.currentHihat = "./sounds/hihat-acoustic01.wav";
 
         this.index     = 0;
         this.bpm       = 150;
@@ -14,7 +19,6 @@ class Drumkit {
 
     activePad () {
         this.classList.toggle('active');
-        console.log('1');
     }
 
     repeat () {
@@ -30,12 +34,12 @@ class Drumkit {
                     this.kickAudio.play();
                 }
                 if(bar.classList.contains('snare-pad')){
-                    this.snareAudio.play();
                     this.snareAudio.currentTime = 0;
+                    this.snareAudio.play();
                 }
                 if(bar.classList.contains('hihat-pad')){
-                    this.hihatAudio.play();
                     this.hihatAudio.currentTime = 0;
+                    this.hihatAudio.play();
                 }
             }
         });
@@ -64,9 +68,30 @@ class Drumkit {
             this.playBtn[0].innerText = 'PLAY';
         }
     }
-   
 
+    changeMusic (e) {
+        const selectName = e.target.name;
+        const selectValue = e.target.value;
+
+        switch (selectName){
+            case 'kick-select':
+                drumkit.kickAudio.src = selectValue;
+                break;
+            case 'snare-select':
+                drumkit.snareAudio.src = selectValue;
+                break;
+            case 'hihat-select':
+                drumkit.hihatAudio.src = selectValue;
+                break;
+        
+      
+        
+        }
+        console.log(drumkit.kickAudio)
+    }
 }
+
+
 
 const drumkit = new Drumkit();
 
@@ -77,8 +102,13 @@ drumkit.pads.forEach( pad =>{
     });
 });
 
-
 drumkit.playBtn[0].addEventListener("click", function() {
     drumkit.updateBtn();
     drumkit.start();
-  });
+});
+
+drumkit.selects.forEach( select => {
+    select.addEventListener('change', function(e){
+        drumkit.changeMusic(e);
+    })
+})
